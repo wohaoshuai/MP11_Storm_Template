@@ -1,9 +1,9 @@
 FROM ubuntu:18.04
 
-ARG STORM_VERSION=apache-storm-1.2.2
-ARG STORM_DOWNLOAD_URL=http://mirrors.koehn.com/apache/storm/$STORM_VERSION/$STORM_VERSION.tar.gz
+ARG STORM_VERSION=apache-storm-1.2.3
+ARG STORM_DOWNLOAD_URL=https://archive.apache.org/dist/storm/$STORM_VERSION/$STORM_VERSION.tar.gz
 
-ARG REDIS_VERSION=redis-5.0.3
+ARG REDIS_VERSION=redis-5.0.7
 ARG REDIS_DOWNLOAD_URL=http://download.redis.io/releases/$REDIS_VERSION.tar.gz
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -59,18 +59,18 @@ RUN set -ex; \
   \
   apt-get purge -y --auto-remove $buildDeps
 
-COPY entrypoint.sh /mp4/entrypoint.sh
+COPY entrypoint.sh /mp6/entrypoint.sh
 COPY redis.conf /etc/redis/redis.conf
 
 ENV JAVA_HOME "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
-ENV CLASS_PATH "/mp4/Jar/jedis.jar"
+ENV CLASS_PATH "/mp6/Jar/jedis.jar"
 ENV STORM_HOME "/usr/local/storm"
 ENV PATH "/usr/local/storm/bin:${PATH}"
 
-COPY Jar/ /mp4/Jar/
+COPY Jar/ /mp6/Jar/
 
-RUN chmod a+rwx -R /mp4/
+RUN chmod a+rwx -R /mp6/
 
-WORKDIR /mp4/solution
+WORKDIR /mp6/solution
 
-ENTRYPOINT ["/mp4/entrypoint.sh"]
+ENTRYPOINT ["/mp6/entrypoint.sh"]
