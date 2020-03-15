@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN \
   apt-get update; \
   apt-get install -y --no-install-recommends \
-  	vim maven expect zip unzip openjdk-8-jdk \
+  	vim maven expect zip unzip openjdk-8-jdk git \
 	python; \
   rm -rf /var/cache/apt /var/lib/apt/lists
 
