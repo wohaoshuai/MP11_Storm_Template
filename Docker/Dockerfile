@@ -59,18 +59,18 @@ RUN set -ex; \
   \
   apt-get purge -y --auto-remove $buildDeps
 
-COPY entrypoint.sh /mp7/entrypoint.sh
+COPY entrypoint.sh /mp11/entrypoint.sh
 COPY redis.conf /etc/redis/redis.conf
 
 ENV JAVA_HOME "/usr/lib/jvm/java-1.8.0-openjdk-amd64"
-ENV CLASS_PATH "/mp7/Jar/jedis.jar"
+ENV CLASS_PATH "/mp11/Jar/jedis.jar"
 ENV STORM_HOME "/usr/local/storm"
 ENV PATH "/usr/local/storm/bin:${PATH}"
 
-COPY Jar/ /mp7/Jar/
+COPY Jar/ /mp11/Jar/
 
-RUN chmod a+rwx -R /mp7/
+RUN chmod a+rwx -R /mp11/
 
-WORKDIR /mp7/solution
+WORKDIR /mp11/solution
 
-ENTRYPOINT ["/mp7/entrypoint.sh"]
+ENTRYPOINT ["/mp11/entrypoint.sh"]
