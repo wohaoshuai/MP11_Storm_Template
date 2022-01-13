@@ -17,6 +17,7 @@ class FileReaderSpout(storm.Spout):
 
         # TODO:
         # Task: Initialize the file reader
+        # hint: get the filename from conf argument 
         pass
         # End
 

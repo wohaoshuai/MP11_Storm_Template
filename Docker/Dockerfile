@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-ARG STORM_VERSION=apache-storm-1.2.3
+ARG STORM_VERSION=apache-storm-1.2.4
 ARG STORM_DOWNLOAD_URL=https://archive.apache.org/dist/storm/$STORM_VERSION/$STORM_VERSION.tar.gz
 
 ARG REDIS_VERSION=redis-5.0.7

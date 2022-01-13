@@ -43,6 +43,7 @@ components:
   # Task: implement the redis store mapper
   # src/main/java/edu/illinois/storm/WordCountStoreMapper.java
   # redis hash key for part A is "partAWordCount"
+  # Hint: pass in the constructor argument to the class constructor by adding a contructorArgs element to the component.
 
 # spout definitions
 spouts:
@@ -63,6 +64,7 @@ bolts:
   # TODO
   # Task: initialize RedisStoreBolt using poolConfig and storeMapper
   # ClassName is "org.apache.storm.redis.bolt.RedisStoreBolt"
+  # Hint: check the constructor detail, reference existing components by their id 
 
 # stream definitions
 # stream definitions define connections between spouts and bolts.
