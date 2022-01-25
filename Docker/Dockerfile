@@ -11,9 +11,10 @@ RUN \
   apt-get update; \
   apt-get install -y --no-install-recommends \
   	vim maven expect zip unzip openjdk-8-jdk git \
-	python; \
+  python python3-pip python3-dev python3-setuptools; \
+  cd /usr/local/bin; \
+  ln -s /usr/bin/python3 python; \
   rm -rf /var/cache/apt /var/lib/apt/lists
-
 
 # Descript this!
 RUN set -ex; \
@@ -56,6 +57,7 @@ RUN set -ex; \
   rm -r /usr/local/$REDIS_VERSION; \
   \
   pip install storm; \
+  pip3 install storm; \
   \
   apt-get purge -y --auto-remove $buildDeps
 
