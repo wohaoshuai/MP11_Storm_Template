@@ -46,21 +46,6 @@ config:
     # Hint: set N here
     # make sure it's 10 in your final submission
 
-components:
-  - id: "poolConfig"
-    className: "org.apache.storm.redis.common.config.JedisPoolConfig"
-    constructorArgs:
-      - "localhost"
-      - 6379
-      - 2000
-      - "uiuc_cs498_mp11"
-      - 0
-
-  # TODO
-  # Task: implement the redis store mapper
-  # src/main/java/edu/illinois/storm/TopNStoreMapper.java
-  # redis hash key for part D is "partDTopN"
-
 # spout definitions
 spouts:
 
