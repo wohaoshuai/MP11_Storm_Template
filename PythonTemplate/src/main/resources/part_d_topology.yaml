@@ -31,6 +31,15 @@ config:
     # set this to true if you want to see more debug log
     # set it to false before submitting
     topology.debug: false
+    # redis configuration, useful in store bolt
+    redis:
+      host: "localhost"
+      port: 6379
+      db: 0
+      password: "uiuc_cs498_mp11"
+      timeout: 2000
+      # redis hash key for part D is "partDTopN"
+      hashKey: "partDTopN"
     # Hint: you can set input file path here
     # make sure it's "/tmp/data.txt" in your final submission
 
@@ -60,6 +69,9 @@ bolts:
   # Hint: the new top N tracking bolt you need implement in this part is
   # multilang/resources/top_n_finder_bolt.py
   # You need to load N from conf when initialize the bolt
+
+  # Hint: change the store bolt to store the top-N words, for which you need to implement 
+  # multilang/resources/top_n_store_bolt.py
 
 # stream definitions
 # stream definitions define connections between spouts and bolts.

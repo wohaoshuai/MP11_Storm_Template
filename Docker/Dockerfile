@@ -56,8 +56,8 @@ RUN set -ex; \
   rm /usr/local/redis; \
   rm -r /usr/local/$REDIS_VERSION; \
   \
-  pip install storm; \
-  pip3 install storm; \
+  pip install storm redis; \
+  pip3 install storm redis; \
   \
   apt-get purge -y --auto-remove $buildDeps
 

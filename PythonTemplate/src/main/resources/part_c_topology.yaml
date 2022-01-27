@@ -31,20 +31,18 @@ config:
     # set this to true if you want to see more debug log
     # set it to false before submitting
     topology.debug: false
+    # redis configuration, useful in store bolt
+    redis:
+      host: "localhost"
+      port: 6379
+      db: 0
+      password: "uiuc_cs498_mp11"
+      timeout: 2000
+      # redis hash key for part C is "partCWordCount"
+      hashKey: "partCWordCount"
     # Hint: you can set input file path here
     # make sure it's "/tmp/data.txt" in your final submission
 
-components:
-  - id: "poolConfig"
-    className: "org.apache.storm.redis.common.config.JedisPoolConfig"
-    constructorArgs:
-      - "localhost"
-      - 6379
-      - 2000
-      - "uiuc_cs498_mp11"
-      - 0
-
-  # Hint: redis hash key for part C is "partCWordCount"
 
 # spout definitions
 spouts:

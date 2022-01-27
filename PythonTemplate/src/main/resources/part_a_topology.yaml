@@ -28,24 +28,17 @@ config:
     # set this to true if you want to see more debug log
     # set it to false before submitting
     topology.debug: false
-    # Hint: you can set input file path here
-    # make sure it's "/tmp/data.txt" in your final submission
+    # redis configuration, useful in store bolt
+    redis:
+      host: "localhost"
+      port: 6379
+      db: 0
+      password: "uiuc_cs498_mp11"
+      timeout: 2000
+      # redis hash key for part A is "partAWordCount"
+      hashKey: "partAWordCount"
 
-components:
-  - id: "poolConfig"
-    className: "org.apache.storm.redis.common.config.JedisPoolConfig"
-    constructorArgs:
-      - "localhost"
-      - 6379
-      - 2000
-      - "uiuc_cs498_mp11"
-      - 0
 
-  # TODO
-  # Task: implement the redis store mapper
-  # src/main/java/edu/illinois/storm/WordCountStoreMapper.java
-  # className: "edu.illinois.storm.WordCountStoreMapper"
-  # redis hash key for part A is "partAWordCount"
 
 # spout definitions
 spouts:
@@ -65,8 +58,8 @@ bolts:
   # multilang/resources/word_count_bolt.py
 
   # TODO
-  # Task: initialize RedisStoreBolt using poolConfig and storeMapper
-  # ClassName is "org.apache.storm.redis.bolt.RedisStoreBolt"
+  # Task: implement the redis store bolt
+  # multilang/resources/word_count_store_bolt.py
 
 # stream definitions
 # stream definitions define connections between spouts and bolts.
