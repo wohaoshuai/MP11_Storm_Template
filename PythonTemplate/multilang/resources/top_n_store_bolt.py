@@ -5,12 +5,12 @@ import redis
 class TopNStoreBolt(storm.BasicBolt):
     # Initialize this instance
     def initialize(self, conf, context):
-        # retrive redis configuration into a dictonary
+        # redis configuration converted into a dictonary
         self._redis = conf.get("redis")
         storm.logInfo("Top N Store bolt instance starting...")
 
         # TODO
-        # Create a redis.StrictRedis instance using the redis configuration in self._redis
+        # Connect to Redis using redis.Redis() with redis configuration in self._redis dictionary
         # Hint: Add necessary instance variables and classes if needed
 
     def process(self, tup):
