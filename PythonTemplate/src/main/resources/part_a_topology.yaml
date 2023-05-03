@@ -42,34 +42,59 @@ config:
 
 # spout definitions
 spouts:
-  # TODO
-  # Task: implement the random sentence spout
+  # Implement the random sentence spout
   # multilang/resources/random_sentence_spout.py
   # Hint: you need to define output field(s) here when using FluxShellSpout
+  sentence-spout:
+    className: "org.apache.storm.flux.wrappers.spouts.FluxShellSpout"
+    constructorArgs:
+      - ["python", "${COMPONENT_DIR}/random_sentence_spout.py"]
+      - true
+    outputFields: ["sentence"]
 
 # bolt definitions
 bolts:
-  # TODO
-  # Task: implement the split sentences bolt
+  # Implement the split sentences bolt
   # multilang/resources/split_sentence_bolt.py
+  split-bolt:
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "${COMPONENT_DIR}/split_sentence_bolt.py"]
+      - true
 
-  # TODO
-  # Task: implement the word count bolt
+  # Implement the word count bolt
   # multilang/resources/word_count_bolt.py
+  count-bolt:
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "${COMPONENT_DIR}/word_count_bolt.py"]
+      - true
 
-  # TODO
-  # Task: implement the redis store bolt
+  # Implement the redis store bolt
   # multilang/resources/word_count_store_bolt.py
-
+  store-bolt:
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "${COMPONENT_DIR}/word_count_store_bolt.py"]
+      - true
 # stream definitions
 # stream definitions define connections between spouts and bolts.
 streams:
-  # TODO
-  # Task: pipe output of sentences generating spout to split bolt
+  # Pipe output of sentences generating spout to split bolt
+  - name: "sentence-spout to split-bolt"
+    from: "sentence-spout"
+    to: "split-bolt"
 
-  # TODO
-  # Task: pipe output of split bolt to word count bolt
+  # Pipe output of split bolt to word count bolt
   # Hint: choose the right grouping type to make problem easier
+  - name: "split-bolt to count-bolt"
+    from: "split-bolt"
+    to: "count-bolt"
+    grouping:
+      type: "fields"
+      args: ["word"]
 
-  # TODO
-  # Task: pipe output of word count bolt to redis store bolt
+  # Pipe output of word count bolt to redis store bolt
+  - name: "count-bolt to store-bolt"
+    from: "count-bolt"
+    to: "store-bolt"

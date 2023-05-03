@@ -21,11 +21,13 @@ class SentenceSpout(storm.Spout):
 
     # Process the next tuple
     def nextTuple(self):
-        time.sleep(0.2)
-        # TODO
+        sentence = random.choice(SENTENCES)
+        storm.logInfo("Emitting sentence: {}".format(sentence))
+        storm.emit([sentence])
+        # time.sleep(0.2)
         # Task: randomly generate sentence from sentences string array
         # Note: only generate one sentence in this function
-        pass
+        # pass
         # End
 
 

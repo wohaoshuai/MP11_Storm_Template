@@ -15,7 +15,10 @@ class SplitBolt(storm.BasicBolt):
         # TODO
         # Task: split sentence and emit words
         # Hint: split on "[^a-zA-Z0-9-]"
-        pass
+        sentence = tup.values[0]
+        words = re.split("[^a-zA-Z0-9-]+", sentence)
+        for word in words:
+            storm.emit([word])
         # End
 
 

@@ -10,14 +10,15 @@ class CountBolt(storm.BasicBolt):
 
         storm.logInfo("Counter bolt instance starting...")
 
+        if not hasattr(self, 'counts'):
+            self.counts = Counter()
         # Hint: Add necessary instance variables and classes if needed
 
     def process(self, tup):
-        # TODO
-        # Task: word count
-        # Hint: using instance variable to tracking the word count
-        pass
-        # End
+        word = tup.values[0]
+        self.counts[word] += 1
+        storm.logInfo("count of {}: {}".format(word, self.counts[word]))
+        storm.emit([word, self.counts[word]])
 
 
 # Start the bolt when it's invoked
