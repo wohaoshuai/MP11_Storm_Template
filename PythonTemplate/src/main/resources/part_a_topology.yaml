@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
+# ---
 
 # topology definition
 # name to be used when submitting
@@ -45,10 +45,10 @@ spouts:
   # Implement the random sentence spout
   # multilang/resources/random_sentence_spout.py
   # Hint: you need to define output field(s) here when using FluxShellSpout
-  sentence-spout:
+  - id: "sentence-spout"
     className: "org.apache.storm.flux.wrappers.spouts.FluxShellSpout"
     constructorArgs:
-      - ["python", "${COMPONENT_DIR}/random_sentence_spout.py"]
+      - ["python", "random_sentence_spout.py"]
       - true
     outputFields: ["sentence"]
 
@@ -56,26 +56,26 @@ spouts:
 bolts:
   # Implement the split sentences bolt
   # multilang/resources/split_sentence_bolt.py
-  split-bolt:
+  - id: "split-bolt"
     className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
     constructorArgs:
-      - ["python", "${COMPONENT_DIR}/split_sentence_bolt.py"]
+      - ["python", "split_sentence_bolt.py"]
       - true
 
   # Implement the word count bolt
   # multilang/resources/word_count_bolt.py
-  count-bolt:
+  - id: "count-bolt"
     className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
     constructorArgs:
-      - ["python", "${COMPONENT_DIR}/word_count_bolt.py"]
+      - ["python", "word_count_bolt.py"]
       - true
 
   # Implement the redis store bolt
   # multilang/resources/word_count_store_bolt.py
-  store-bolt:
+  - id: "store-bolt"
     className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
     constructorArgs:
-      - ["python", "${COMPONENT_DIR}/word_count_store_bolt.py"]
+      - ["python", "word_count_store_bolt.py"]
       - true
 # stream definitions
 # stream definitions define connections between spouts and bolts.
