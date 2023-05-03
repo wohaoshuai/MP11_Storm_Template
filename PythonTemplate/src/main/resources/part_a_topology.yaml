@@ -42,15 +42,12 @@ config:
 
 # spout definitions
 spouts:
-  # Implement the random sentence spout
-  # multilang/resources/random_sentence_spout.py
-  # Hint: you need to define output field(s) here when using FluxShellSpout
   - id: "sentence-spout"
     className: "org.apache.storm.flux.wrappers.spouts.FluxShellSpout"
     constructorArgs:
       - ["python", "random_sentence_spout.py"]
-      - true
-    outputFields: ["sentence"]
+      - ["sentence"]
+    parallelism: 1
 
 # bolt definitions
 bolts:
@@ -60,7 +57,8 @@ bolts:
     className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
     constructorArgs:
       - ["python", "split_sentence_bolt.py"]
-      - true
+      - ["word"]
+    parallelism: 1
 
   # Implement the word count bolt
   # multilang/resources/word_count_bolt.py
@@ -68,7 +66,8 @@ bolts:
     className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
     constructorArgs:
       - ["python", "word_count_bolt.py"]
-      - true
+      - ["word","count"]
+    parallelism: 1
 
   # Implement the redis store bolt
   # multilang/resources/word_count_store_bolt.py
@@ -77,6 +76,8 @@ bolts:
     constructorArgs:
       - ["python", "word_count_store_bolt.py"]
       - true
+    parallelism: 1
+
 # stream definitions
 # stream definitions define connections between spouts and bolts.
 streams:
@@ -84,6 +85,8 @@ streams:
   - name: "sentence-spout to split-bolt"
     from: "sentence-spout"
     to: "split-bolt"
+    grouping:
+      type: SHUFFLE
 
   # Pipe output of split bolt to word count bolt
   # Hint: choose the right grouping type to make problem easier
@@ -91,10 +94,12 @@ streams:
     from: "split-bolt"
     to: "count-bolt"
     grouping:
-      type: "fields"
+      type: FIELDS
       args: ["word"]
 
   # Pipe output of word count bolt to redis store bolt
   - name: "count-bolt to store-bolt"
     from: "count-bolt"
     to: "store-bolt"
+    grouping:
+      type: SHUFFLE
