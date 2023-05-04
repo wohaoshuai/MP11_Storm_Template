@@ -40,19 +40,95 @@ config:
       timeout: 2000
       # redis hash key for part C is "partCWordCount"
       hashKey: "partCWordCount"
+    filename: "/tmp/data.txt"
     # Hint: you can set input file path here
     # make sure it's "/tmp/data.txt" in your final submission
 
 
 # spout definitions
 spouts:
+  # Hint: the new file reading spout you need implement in this part is
+  # multilang/resources/file_reader_spout.py
+  - id: "sentence-spout"
+    className: "org.apache.storm.flux.wrappers.spouts.FluxShellSpout"
+    constructorArgs:
+      - ["python", "file_reader_spout.py"]
+      - ["sentence"]
+    parallelism: 1
 
 # bolt definitions
 bolts:
+  # Implement the split sentences bolt
+  # multilang/resources/split_sentence_bolt.py
+  - id: "split-bolt"
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "split_sentence_bolt.py"]
+      - ["word"]
+    parallelism: 5
+
+  - id: "normalizer_bolt"
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "normalizer_bolt.py"]
+      - ["word"]
+    parallelism: 5
+
+  # Implement the word count bolt
+  # multilang/resources/word_count_bolt.py
+  - id: "count-bolt"
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "word_count_bolt.py"]
+      - ["word","count"]
+    parallelism: 5
+
+  # Implement the redis store bolt
+  # multilang/resources/word_count_store_bolt.py
+  - id: "store-bolt"
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "word_count_store_bolt.py"]
+    parallelism: 5
+
+# stream definitions
+# stream definitions define connections between spouts and bolts.
+streams:
+  # Pipe output of sentences generating spout to split bolt
+  - name: "sentence-spout to normalizer-bolt"
+    from: "sentence-spout"
+    to: "normalizer-bolt"
+    grouping:
+      type: SHUFFLE
+
+  - name: "normalizer-spout to split-bolt"
+    from: "normalizer-spout"
+    to: "split-bolt"
+    grouping:
+      type: SHUFFLE
+
+  # Pipe output of split bolt to word count bolt
+  # Hint: choose the right grouping type to make problem easier
+  - name: "split-bolt to count-bolt"
+    from: "split-bolt"
+    to: "count-bolt"
+    grouping:
+      type: FIELDS
+      args: ["word"]
+
+  # Pipe output of word count bolt to redis store bolt
+  - name: "count-bolt to store-bolt"
+    from: "count-bolt"
+    to: "store-bolt"
+    grouping:
+      type: SHUFFLE
+
+# bolt definitions
+# bolts:
   # Hint: the new normalize bolt you need implement in this part is
   # multilang/resources/normalizer_bolt.py
 
 # stream definitions
 # stream definitions define connections between spouts and bolts.
-streams:
+# streams:
   # Hint: add new normalize bolt into the topology
