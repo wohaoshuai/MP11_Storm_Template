@@ -75,7 +75,6 @@ bolts:
     className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
     constructorArgs:
       - ["python", "word_count_store_bolt.py"]
-      - true
     parallelism: 1
 
 # stream definitions
