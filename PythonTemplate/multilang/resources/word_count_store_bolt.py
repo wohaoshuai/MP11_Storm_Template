@@ -6,7 +6,6 @@ class WordCountStoreBolt(storm.BasicBolt):
     def initialize(self, conf, context):
         self._redis_conf = conf.get("redis")  # redis configuration converted into a dictonary
         storm.logInfo("Word Count Store bolt instance starting...")
-        print('WordCountStoreBolt self._redis', self._redis)
 
         # TODO
         # Connect to Redis using redis.Redis() with redis configuration in self._redis dictionary
