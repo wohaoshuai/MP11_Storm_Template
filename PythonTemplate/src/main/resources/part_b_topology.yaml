@@ -54,7 +54,7 @@ spouts:
     constructorArgs:
       - ["python", "file_reader_spout.py"]
       - ["sentence"]
-    parallelism: 3
+    parallelism: 1
 
 # bolt definitions
 bolts:
