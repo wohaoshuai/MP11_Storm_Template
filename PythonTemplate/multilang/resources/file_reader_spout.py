@@ -19,6 +19,7 @@ class FileReaderSpout(storm.Spout):
         # Task: Initialize the file reader
         # hint: get the filename from conf argument 
         self.filename = conf["filename"]
+        storm.logInfo("filename: ------{}".format(self.filename))
         self.file = open(self.filename, "r")
         # End
 
@@ -26,6 +27,8 @@ class FileReaderSpout(storm.Spout):
         # TODO:
         # Task 1: read the next line and emit a tuple for it
         # Task 2: don't forget to sleep for 1 second when the file is entirely read to prevent a busy-loop
+        if self.file is None:  # Open the file if it hasn't been opened yet
+            self.file = open(self.filename, "r")
         line = self.file.readline().strip()
         if line:
             storm.emit([line])
@@ -33,7 +36,7 @@ class FileReaderSpout(storm.Spout):
             if not self._complete:
                 sleep(1)
                 self._complete = True
-                self.file.close()
+                # self.file.close()
         # End
 
 
