@@ -101,8 +101,8 @@ streams:
     grouping:
       type: SHUFFLE
 
-  - name: "split-spout to normalizer-bolt"
-    from: "split-spout"
+  - name: "split-bolt to normalizer-bolt"
+    from: "split-bolt"
     to: "normalizer-bolt"
     grouping:
       type: SHUFFLE
