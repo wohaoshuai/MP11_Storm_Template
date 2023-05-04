@@ -17,7 +17,7 @@ class CountBolt(storm.BasicBolt):
     def process(self, tup):
         word = tup.values[0]
         self.counts[word] += 1
-        storm.logInfo("count of {}: {}".format(word, self.counts[word]))
+        # storm.logInfo("count of {}: {}".format(word, self.counts[word]))
         storm.emit([word, self.counts[word]])
 
 
