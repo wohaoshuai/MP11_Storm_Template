@@ -49,6 +49,8 @@ config:
 
 # spout definitions
 spouts:
+  # Hint: the new file reading spout you need implement in this part is
+  # multilang/resources/file_reader_spout.py
   - id: "sentence-spout"
     className: "org.apache.storm.flux.wrappers.spouts.FluxShellSpout"
     constructorArgs:
@@ -58,6 +60,8 @@ spouts:
 
 # bolt definitions
 bolts:
+  # Implement the split sentences bolt
+  # multilang/resources/split_sentence_bolt.py
   - id: "split-bolt"
     className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
     constructorArgs:
@@ -82,17 +86,17 @@ bolts:
     parallelism: 5
 
   - id: "top_n_finder_bolt"
-  className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
-  constructorArgs:
-    - ["python", "top_n_finder_bolt.py"]
-    - ["top_words"]
-  parallelism: 5
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "top_n_finder_bolt.py"]
+      - ["top_words"]
+    parallelism: 5
 
-    - id: "top_n_store_bolt"
-  className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
-  constructorArgs:
-    - ["python", "top_n_store_bolt.py"]
-  parallelism: 5
+  - id: "top_n_store_bolt"
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "top_n_store_bolt.py"]
+    parallelism: 5
   
   # Hint: the new top N tracking bolt you need implement in this part is
   # multilang/resources/top_n_finder_bolt.py
@@ -106,35 +110,35 @@ bolts:
 streams:
   # Hint: add new top N finder bolt into the topology
   - name: "sentence-spout to split-bolt"
-  from: "sentence-spout"
-  to: "split-bolt"
-  grouping:
-    type: SHUFFLE
+    from: "sentence-spout"
+    to: "split-bolt"
+    grouping:
+      type: SHUFFLE
 
   - name: "split-bolt to normalizer-bolt"
-  from: "split-bolt"
-  to: "normalizer-bolt"
-  grouping:
-    type: SHUFFLE
+    from: "split-bolt"
+    to: "normalizer-bolt"
+    grouping:
+      type: SHUFFLE
 
   # Pipe output of split bolt to word count bolt
   # Hint: choose the right grouping type to make problem easier
   - name: "split-bolt to count-bolt"
-  from: "normalizer-bolt"
-  to: "count-bolt"
-  grouping:
-    type: FIELDS
-    args: ["word"]
+    from: "normalizer-bolt"
+    to: "count-bolt"
+    grouping:
+      type: FIELDS
+      args: ["word"]
 
   # Pipe output of word count bolt to redis store bolt
   - name: "count-bolt to top_n_finder_bolt"
-  from: "count-bolt"
-  to: "top_n_finder_bolt"
-  grouping:
-    type: SHUFFLE
+    from: "count-bolt"
+    to: "top_n_finder_bolt"
+    grouping:
+      type: SHUFFLE
 
   - name: "top_n_finder_bolt to top_n_store_bolt"
-  from: "top_n_finder_bolt"
-  to: "top_n_store_bolt"
-  grouping:
-    type: SHUFFLE
+    from: "top_n_finder_bolt"
+    to: "top_n_store_bolt"
+    grouping:
+      type: SHUFFLE
