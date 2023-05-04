@@ -47,7 +47,7 @@ spouts:
     constructorArgs:
       - ["python", "random_sentence_spout.py"]
       - ["sentence"]
-    parallelism: 3
+    parallelism: 1
 
 # bolt definitions
 bolts:
@@ -58,7 +58,7 @@ bolts:
     constructorArgs:
       - ["python", "split_sentence_bolt.py"]
       - ["word"]
-    parallelism: 3
+    parallelism: 5
 
   # Implement the word count bolt
   # multilang/resources/word_count_bolt.py
@@ -67,7 +67,7 @@ bolts:
     constructorArgs:
       - ["python", "word_count_bolt.py"]
       - ["word","count"]
-    parallelism: 3
+    parallelism: 5
 
   # Implement the redis store bolt
   # multilang/resources/word_count_store_bolt.py
@@ -75,7 +75,7 @@ bolts:
     className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
     constructorArgs:
       - ["python", "word_count_store_bolt.py"]
-    parallelism: 3
+    parallelism: 5
 
 # stream definitions
 # stream definitions define connections between spouts and bolts.

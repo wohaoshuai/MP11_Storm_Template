@@ -14,9 +14,8 @@ class TopNFinderBolt(storm.BasicBolt):
 
         # TODO:
         # Task: set N
-        pass
-        # End
-
+        self._N = 10
+        self._top_N = []
         # Hint: Add necessary instance variables and classes if needed
 
     def process(self, tup):
@@ -26,8 +25,22 @@ class TopNFinderBolt(storm.BasicBolt):
         Hint: implement efficient algorithm so that it won't be shutdown before task finished
               the algorithm we used when we developed the auto-grader is maintaining a N size min-heap
         '''
-        pass
         # End
+        word, count = tup.values
+        counter = Counter({word: count})
+
+        # Add the new word to the top N list
+        for w, freq in counter.items():
+            if len(self._top_N) < self._N:
+                heapq.heappush(self._top_N, (freq, w))
+            elif freq > self._top_N[0][0]:
+                heapq.heappushpop(self._top_N, (freq, w))
+
+        # Emit the current top N words
+        if len(self._top_N) == self._N:
+            top_words = ", ".join([tup[1] for tup in sorted(self._top_N, reverse=True)])
+            storm.logInfo("count of {}".format(top_words))
+            storm.emit([top_words])
 
 
 # Start the bolt when it's invoked

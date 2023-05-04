@@ -42,15 +42,58 @@ config:
       hashKey: "partDTopN"
     # Hint: you can set input file path here
     # make sure it's "/tmp/data.txt" in your final submission
+    filename: "/tmp/data.txt"
 
     # Hint: set N here
     # make sure it's 10 in your final submission
 
 # spout definitions
 spouts:
+  - id: "sentence-spout"
+    className: "org.apache.storm.flux.wrappers.spouts.FluxShellSpout"
+    constructorArgs:
+      - ["python", "file_reader_spout.py"]
+      - ["sentence"]
+    parallelism: 1
 
 # bolt definitions
 bolts:
+  - id: "split-bolt"
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "split_sentence_bolt.py"]
+      - ["word"]
+    parallelism: 5
+
+  - id: "normalizer-bolt"
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "normalizer_bolt.py"]
+      - ["word"]
+    parallelism: 5
+
+  # Implement the word count bolt
+  # multilang/resources/word_count_bolt.py
+  - id: "count-bolt"
+    className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+    constructorArgs:
+      - ["python", "word_count_bolt.py"]
+      - ["word","count"]
+    parallelism: 5
+
+  - id: "top_n_finder_bolt"
+  className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+  constructorArgs:
+    - ["python", "top_n_finder_bolt.py"]
+    - ["top_words"]
+  parallelism: 5
+
+    - id: "top_n_store_bolt"
+  className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
+  constructorArgs:
+    - ["python", "top_n_store_bolt.py"]
+  parallelism: 5
+  
   # Hint: the new top N tracking bolt you need implement in this part is
   # multilang/resources/top_n_finder_bolt.py
   # You need to load N from conf when initialize the bolt
@@ -62,3 +105,36 @@ bolts:
 # stream definitions define connections between spouts and bolts.
 streams:
   # Hint: add new top N finder bolt into the topology
+  - name: "sentence-spout to split-bolt"
+  from: "sentence-spout"
+  to: "split-bolt"
+  grouping:
+    type: SHUFFLE
+
+  - name: "split-bolt to normalizer-bolt"
+  from: "split-bolt"
+  to: "normalizer-bolt"
+  grouping:
+    type: SHUFFLE
+
+  # Pipe output of split bolt to word count bolt
+  # Hint: choose the right grouping type to make problem easier
+  - name: "split-bolt to count-bolt"
+  from: "normalizer-bolt"
+  to: "count-bolt"
+  grouping:
+    type: FIELDS
+    args: ["word"]
+
+  # Pipe output of word count bolt to redis store bolt
+  - name: "count-bolt to top_n_finder_bolt"
+  from: "count-bolt"
+  to: "top_n_finder_bolt"
+  grouping:
+    type: SHUFFLE
+
+  - name: "top_n_finder_bolt to top_n_store_bolt"
+  from: "top_n_finder_bolt"
+  to: "top_n_store_bolt"
+  grouping:
+    type: SHUFFLE
