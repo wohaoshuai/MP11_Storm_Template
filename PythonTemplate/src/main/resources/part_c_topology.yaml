@@ -67,7 +67,7 @@ bolts:
       - ["word"]
     parallelism: 5
 
-  - id: "normalizer_bolt"
+  - id: "normalizer-bolt"
     className: "org.apache.storm.flux.wrappers.bolts.FluxShellBolt"
     constructorArgs:
       - ["python", "normalizer_bolt.py"]
@@ -95,22 +95,22 @@ bolts:
 # stream definitions define connections between spouts and bolts.
 streams:
   # Pipe output of sentences generating spout to split bolt
-  - name: "sentence-spout to normalizer-bolt"
+  - name: "sentence-spout to split-bolt"
     from: "sentence-spout"
-    to: "normalizer-bolt"
+    to: "split-bolt"
     grouping:
       type: SHUFFLE
 
-  - name: "normalizer-spout to split-bolt"
-    from: "normalizer-spout"
-    to: "split-bolt"
+  - name: "split-spout to normalizer-bolt"
+    from: "split-spout"
+    to: "normalizer-bolt"
     grouping:
       type: SHUFFLE
 
   # Pipe output of split bolt to word count bolt
   # Hint: choose the right grouping type to make problem easier
   - name: "split-bolt to count-bolt"
-    from: "split-bolt"
+    from: "normalizer-bolt"
     to: "count-bolt"
     grouping:
       type: FIELDS
