@@ -25,6 +25,7 @@ class WordCountStoreBolt(storm.BasicBolt):
         word = tup.values[0]
         count = tup.values[1]
         hash_name = self._redis_conf['hashKey']
+        storm.logInfo("Saving word {} count {} to Redis {}".format(word, count, hash_name))
         self._redis.hset(hash_name, word, count)
         storm.logInfo("Saved word {} count {} to Redis".format(word, count))
 
