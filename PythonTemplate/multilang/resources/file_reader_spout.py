@@ -31,6 +31,7 @@ class FileReaderSpout(storm.Spout):
             self.file = open(self.filename, "r")
         line = self.file.readline().strip()
         if line:
+            storm.logInfo("filename: ---line---{}".format(line))
             storm.emit([line])
         else:
             if not self._complete:
